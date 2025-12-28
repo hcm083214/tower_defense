@@ -1,5 +1,5 @@
 import { _decorator, Component, Node, ProgressBar, resources, sp, view } from 'cc';
-import { CharacterResourceManage } from '../manage/CharacterResourceManage'; // 根据实际路径调整
+import { ResourceManage } from '../manage/ResourceManage'; // 根据实际路径调整
 import GameConfig from '../config/GameConfig';
 
 const { ccclass, property } = _decorator;
@@ -23,42 +23,32 @@ export interface ICharacter {
     range: number; // 攻击范围
     dodge: number; // 闪避
     hit: number; // 命中
-    skeletonPath: string; // 骨骼资源路径
     skeleton: sp.Skeleton; // 骨骼组件
-    characterIconPath:string; // 角色图标路径
+    characterIcon: string; // 角色图标
 }
 
 @ccclass('Character')
 export class Character extends Component {
 
-    @property(sp.Skeleton)
-    characterSkeleton: sp.Skeleton = null
-
+    
     @property(ProgressBar)
     hpBar: ProgressBar = null;
 
     characterData: ICharacter = null;
 
+    
+
     init(characterData: ICharacter) {
         this.characterData = {
             ...characterData,
             maxHp: characterData.hp,
-            skeleton: this.characterSkeleton
         };
         // 设置角色名称
         this.node.name = characterData.name;
         this.setNodePosition(characterData.row, characterData.col);
-        // 如果提供了骨骼资源路径，从缓存中获取而不是动态加载
-        if (characterData.skeletonPath) {
-            const cachedSkeleton = CharacterResourceManage.getSkeleton(characterData.skeletonPath);
-            if (cachedSkeleton && this.characterSkeleton) {
-                this.characterSkeleton.skeletonData = cachedSkeleton;
-            }
-        }
-        // 播放待机动画
-        if (this.characterSkeleton) {
-            this.characterSkeleton.setAnimation(0, 'animation', true)
-        }
+        
+
+        
     }
 
     setNodePosition(row: number, col: number) {

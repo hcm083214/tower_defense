@@ -1,23 +1,10 @@
 import { CharacterType, ICharacter } from "../character/Character";
 
 export enum HeroName {
-    mage = 'mage', // 法师
-    archer = 'archer', // 弓箭手
-    warrior = 'warrior', // 战士
-    tank = 'tank' // 坦克
-}
-export enum HeroSpinePathEnum {
-    mage_path = 'spine/hero/dfs',
-    archer_path = 'spine/hero/fzjl',
-    warrior_path = 'spine/hero/hn',
-    tank_path = 'spine/hero/kbsm'
-}
-
-export enum HeroIconPathEnum {
-    mage_path = 'images/hero/dfs',
-    archer_path = 'images/hero/fzjl',
-    warrior_path = 'images/hero/hn',
-    tank_path = 'images/hero/kbsm'
+    mage = 'dfs', // 法师
+    archer = 'fzjl', // 弓箭手
+    warrior = 'hn', // 战士
+    tank = 'kbsm' // 坦克
 }
 
 export enum HeroSpineAnimationEnum {
@@ -45,9 +32,8 @@ export const HeroConfig: IHeroConfig = {
         speed: 5,
         dodge: 5,
         hit: 90,
-        skeletonPath: HeroSpinePathEnum.mage_path,
         skeleton: null,
-        characterIconPath: HeroIconPathEnum.mage_path,
+        characterIcon: null,
         row: 2,
         col: 1,
         range: 1
@@ -62,9 +48,8 @@ export const HeroConfig: IHeroConfig = {
         speed: 7,
         dodge: 8,
         hit: 85,
-        skeletonPath: HeroSpinePathEnum.archer_path,
         skeleton: null,
-        characterIconPath: HeroIconPathEnum.archer_path,
+        characterIcon: null,
         row: 2,
         col: 2,
         range: 1
@@ -79,9 +64,8 @@ export const HeroConfig: IHeroConfig = {
         speed: 5,
         dodge: 5,
         hit: 90,
-        skeletonPath: HeroSpinePathEnum.warrior_path,
         skeleton: null,
-        characterIconPath: HeroIconPathEnum.warrior_path,
+        characterIcon: null,
         row: 2,
         col: 3,
         range: 1
@@ -96,9 +80,8 @@ export const HeroConfig: IHeroConfig = {
         speed: 5,
         dodge: 5,
         hit: 90,
-        skeletonPath: HeroSpinePathEnum.tank_path,
         skeleton: null,
-        characterIconPath: HeroIconPathEnum.tank_path,
+        characterIcon: null,
         row: 2,
         col: 4,
         range: 1

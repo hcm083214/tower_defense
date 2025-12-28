@@ -1,9 +1,8 @@
-import { _decorator, Component, Node, Prefab, instantiate } from 'cc';
+import { _decorator, Component, Node, Prefab, instantiate, sp, SpriteFrame } from 'cc';
 import { Character, ICharacter, CharacterType } from '../character/Character';
 
-import { CharacterResourceManage } from '../manage/CharacterResourceManage';
-import { MonsterSpinePathEnum } from '../enums/spine/MonsterSpineEnum';
-import { HeroConfig, HeroSpinePathEnum } from '../consts/HeroConsts';
+import { ResourceManage } from '../manage/ResourceManage';
+import { HeroConfig } from '../consts/HeroConsts';
 const { ccclass, property } = _decorator;
 
 export interface IBattleSceneConfig {
@@ -41,32 +40,16 @@ export class Battle extends Component {
     }
 
     async start() {
-        await CharacterResourceManage.preloadSkeletons([
-            HeroSpinePathEnum.archer_path,
-            HeroSpinePathEnum.warrior_path,
-            HeroSpinePathEnum.tank_path,
-            HeroSpinePathEnum.mage_path,
-            MonsterSpinePathEnum.MONSTER_1_Path,
-            MonsterSpinePathEnum.MONSTER_2_Path,
-        ]);
+        await this.prepareBattle();
         this.generateCharacters();
         // this.startBattle();
     }
 
     // BattleManager.ts 或类似的战斗管理脚本中
-    async prepareBattle(characters: ICharacter[]) {
+    async prepareBattle() {
         // 收集所有需要的骨骼资源路径
-        const skeletonPaths = characters
-            .map(character => character.skeletonPath)
-            .filter(path => path !== undefined) as string[];
-
-        // 预加载所有骨骼资源
-        try {
-            await CharacterResourceManage.preloadSkeletons(skeletonPaths);
-            console.log('All skeleton resources loaded successfully');
-        } catch (error) {
-            console.error('Failed to preload skeleton resources:', error);
-        }
+        await ResourceManage.instance.loadDirResources('images/hero', SpriteFrame);
+        await ResourceManage.instance.loadDirResources('spine/hero', sp.SkeletonData);
     }
     update(deltaTime: number) {
 
@@ -89,9 +72,8 @@ export class Battle extends Component {
                 speed: 4,
                 dodge: 3,
                 hit: 80,
-                skeletonPath: MonsterSpinePathEnum.MONSTER_1_Path,
                 skeleton: null,
-                characterIconPath: "",
+                characterIcon: null,
                 row: 1,
                 col: 1,
                 range: 1
@@ -107,9 +89,8 @@ export class Battle extends Component {
                 speed: 3,
                 dodge: 10,
                 hit: 75,
-                skeletonPath: MonsterSpinePathEnum.MONSTER_2_Path,
                 skeleton: null,
-                characterIconPath: "",
+                characterIcon: null,
                 row: 1,
                 col: 5,
                 range: 1
@@ -121,18 +102,18 @@ export class Battle extends Component {
             const heroNode = instantiate(this.heroPrefab);
             heroNode.parent = this.heroContainer;
             const hero = heroNode.getComponent(Character);
-            await hero.init(HeroConfig[heroKey]);
+            hero.init(HeroConfig[heroKey]);
             this.heroes.push(hero);
         }
-        
-        
+
+
 
         // 创建怪物
         for (let i = 0; i < monsterDataList.length; i++) {
             const monsterNode = instantiate(this.monsterPrefab);
             monsterNode.parent = this.monsterContainer;
             const monster = monsterNode.getComponent(Character);
-            await monster.init(monsterDataList[i]);
+            monster.init(monsterDataList[i]);
             this.monsters.push(monster);
         }
     }

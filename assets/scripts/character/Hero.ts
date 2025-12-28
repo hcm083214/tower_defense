@@ -1,5 +1,8 @@
 import { _decorator, Component, Graphics, Node, sp } from 'cc';
 import { Character, ICharacter } from './Character';
+import { ResourceManage } from '../manage/ResourceManage';
+import { SpinePathEnums } from '../enums/SpinePathEnums';
+import { HeroSpineAnimationEnum } from '../consts/HeroConsts';
 const { ccclass, property } = _decorator;
 
 interface SkillData {
@@ -16,6 +19,9 @@ interface SkillData {
 @ccclass('Hero')
 export class Hero extends Character {
 
+    @property(sp.Skeleton)
+    characterSkeleton: sp.Skeleton = null
+
     @property
     public skillPoints: number = 0;
 
@@ -28,8 +34,18 @@ export class Hero extends Character {
     @property(Node)
     attackRange: Node = null;
 
+    _getSkeletonFromCache(sourceName: string): sp.SkeletonData | null {
+        const skeletonData = ResourceManage.instance.getDirResourceByName<sp.SkeletonData>(SpinePathEnums.HERO_SPINE_PATH, sourceName);
+        return skeletonData || null;
+    }
+
     init(characterData: ICharacter, skillData?: SkillData) {
         super.init(characterData);
+        this.characterSkeleton.skeletonData = this._getSkeletonFromCache(characterData.name);
+        // 播放待机动画
+        if (this.characterSkeleton) {
+            this.characterSkeleton.setAnimation(0, HeroSpineAnimationEnum.Idle, true)
+        }
         this.currentSkill = skillData;
     }
 
