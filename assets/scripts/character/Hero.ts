@@ -41,9 +41,9 @@ export class Hero extends Character {
 
     init(characterData: ICharacter, skillData?: SkillData) {
         super.init(characterData);
-        this.characterSkeleton.skeletonData = this._getSkeletonFromCache(characterData.name);
         // 播放待机动画
         if (this.characterSkeleton) {
+            this.characterSkeleton.skeletonData = this._getSkeletonFromCache(characterData.name);
             this.characterSkeleton.setAnimation(0, HeroSpineAnimationEnum.Idle, true)
         }
         this.currentSkill = skillData;
@@ -59,7 +59,6 @@ export class Hero extends Character {
     }
     createHeroAttackRange() {
         const graphics = this.attackRange.getComponent(Graphics);
-        console.log("🚀 ~ Hero ~ onLoad ~ graphics:", graphics)
     }
     useSkill() {
 

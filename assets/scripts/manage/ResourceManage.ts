@@ -11,45 +11,78 @@ export class ResourceManage extends Singleton {
     private _resources: Map<string, Asset> = new Map();
 
     /**
-     * 加载单个资源
+     * @description: 加载单个资源
+     * @param {string} path
+     * @param {new} type
+     * @return {*}
      */
-    public loadResources<T extends Asset>(path: string, type: new () => T): Promise<T> {
+    public loadResources<T extends Asset>(path: string, type?: null | (new () => T)): Promise<T> {
         if (this._resources.has(path)) {
             const cachedResource = this._resources.get(path) as T;
             return Promise.resolve(cachedResource);
         }
 
         return new Promise<T>((resolve, reject) => {
-            resources.load<T>(path, type, (err, resource) => {
-                if (err) {
-                    console.error(`Failed to load resource: ${path}`, err);
-                    reject(err);
-                } else {
-                    this._resources.set(path, resource);
-                    resolve(resource);
-                }
-            });
+            if (type === undefined || type === null) {
+                // 当没有指定类型时，让引擎自动推断类型
+                resources.load<T>(path, (err, resource) => {
+                    if (err) {
+                        console.error(`Failed to load resource: ${path}`, err);
+                        reject(err);
+                    } else {
+                        this._resources.set(path, resource);
+                        resolve(resource);
+                    }
+                });
+            } else {
+                resources.load<T>(path, type, (err, resource) => {
+                    if (err) {
+                        console.error(`Failed to load resource: ${path}`, err);
+                        reject(err);
+                    } else {
+                        this._resources.set(path, resource);
+                        resolve(resource);
+                    }
+                });
+            }
         });
     }
 
     /**
      * 加载目录下所有资源
      */
-    public loadDirResources<T extends Asset>(path: string, type: new () => T): Promise<T[]> {
+    public loadDirResources<T extends Asset>(path: string, type?: null | (new () => T)): Promise<T[]> {
         if (this._dirResources.has(path)) {
             return Promise.resolve(this._dirResources.get(path) as T[]);
         }
 
         return new Promise<T[]>((resolve, reject) => {
-            resources.loadDir<T>(path, type, (err, resourcesList) => {
-                if (err) {
-                    console.error(`Failed to load resource directory: ${path}`, err);
-                    reject(err);
-                } else {
-                    this._dirResources.set(path, resourcesList);
-                    resolve(resourcesList);
-                }
-            });
+            if (type === undefined || type === null) {
+                // 当没有指定类型时，让引擎自动推断类型
+                resources.loadDir<T>(path, (err, resourcesList) => {
+                    if (err) {
+                        console.error(`Failed to load resource: ${path}`, err);
+                        reject(err);
+                    } else {
+                        console.log("🚀 ~ ResourceManage1 ~ loadDirResources ~ resourcesList:", resourcesList.length)
+
+                        this._dirResources.set(path, resourcesList);
+                        resolve(resourcesList);
+                    }
+                });
+            } else {
+                resources.loadDir<T>(path, type, (err, resourcesList) => {
+                    if (err) {
+                        console.error(`Failed to load resource: ${path}`, err);
+                        reject(err);
+                    } else {
+                        console.log("🚀 ~ ResourceManage2 ~ loadDirResources ~ resourcesList:", resourcesList.length)
+
+                        this._dirResources.set(path, resourcesList);
+                        resolve(resourcesList);
+                    }
+                });
+            }
         });
     }
 

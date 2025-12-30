@@ -3,6 +3,8 @@ import { Character, ICharacter, CharacterType } from '../character/Character';
 
 import { ResourceManage } from '../manage/ResourceManage';
 import { HeroConfig } from '../consts/HeroConsts';
+import { MonsterConfig } from '../consts/MonsterConsts';
+import { SpinePathEnums } from '../enums/SpinePathEnums';
 const { ccclass, property } = _decorator;
 
 export interface IBattleSceneConfig {
@@ -49,7 +51,8 @@ export class Battle extends Component {
     async prepareBattle() {
         // 收集所有需要的骨骼资源路径
         await ResourceManage.instance.loadDirResources('images/hero', SpriteFrame);
-        await ResourceManage.instance.loadDirResources('spine/hero', sp.SkeletonData);
+        await ResourceManage.instance.loadDirResources(SpinePathEnums.HERO_SPINE_PATH, sp.SkeletonData);
+        await ResourceManage.instance.loadDirResources(SpinePathEnums.MONSTER_SPINE_PATH, sp.SkeletonData);
     }
     update(deltaTime: number) {
 
@@ -59,46 +62,7 @@ export class Battle extends Component {
     async generateCharacters() {
         // 英雄数据
 
-
-        // 怪物数据
-        const monsterDataList: ICharacter[] = [
-            {
-                type: CharacterType.Monster,
-                name: "哥布林",
-                level: 1,
-                hp: 60,
-                attack: 15,
-                defense: 3,
-                speed: 4,
-                dodge: 3,
-                hit: 80,
-                skeleton: null,
-                characterIcon: null,
-                row: 1,
-                col: 1,
-                range: 1
-
-            },
-            {
-                type: CharacterType.Monster,
-                name: "史莱姆",
-                level: 1,
-                hp: 50,
-                attack: 10,
-                defense: 8,
-                speed: 3,
-                dodge: 10,
-                hit: 75,
-                skeleton: null,
-                characterIcon: null,
-                row: 1,
-                col: 5,
-                range: 1
-            }
-        ];
-
         for (const heroKey in HeroConfig) {
-            console.log("🚀 ~ Battle ~ generateCharacters ~ heroKey:", heroKey)
             const heroNode = instantiate(this.heroPrefab);
             heroNode.parent = this.heroContainer;
             const hero = heroNode.getComponent(Character);
@@ -106,14 +70,11 @@ export class Battle extends Component {
             this.heroes.push(hero);
         }
 
-
-
-        // 创建怪物
-        for (let i = 0; i < monsterDataList.length; i++) {
+        for (const key in MonsterConfig) {
             const monsterNode = instantiate(this.monsterPrefab);
             monsterNode.parent = this.monsterContainer;
             const monster = monsterNode.getComponent(Character);
-            monster.init(monsterDataList[i]);
+            monster.init(MonsterConfig[key]);
             this.monsters.push(monster);
         }
     }

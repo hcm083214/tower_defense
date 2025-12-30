@@ -2,6 +2,7 @@ import { _decorator, Component, Node, sp } from 'cc';
 import { Character, ICharacter } from './Character';
 import { ResourceManage } from '../manage/ResourceManage';
 import { SpinePathEnums } from '../enums/SpinePathEnums';
+import { MonsterSpineAnimationEnum } from '../consts/MonsterConsts';
 const { ccclass, property } = _decorator;
 
 @ccclass('Monster')
@@ -21,10 +22,10 @@ export class Monster extends Character {
 
     init(characterData: ICharacter) {
         super.init(characterData);
-        this.characterSkeleton.skeletonData = this._getSkeletonFromCache(characterData.name);
         // 播放待机动画
         if (this.characterSkeleton) {
-            this.characterSkeleton.setAnimation(0, 'animation', true)
+            this.characterSkeleton.skeletonData = this._getSkeletonFromCache(characterData.name);
+            this.characterSkeleton.setAnimation(0, MonsterSpineAnimationEnum.Run, true)
         }
     }
     move(dt: number) {
