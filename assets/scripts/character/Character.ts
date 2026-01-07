@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, ProgressBar, resources, sp, view } from 'cc';
+import { _decorator, Component, Node, Prefab, resources, sp, view } from 'cc';
 import { ResourceManage } from '../manage/ResourceManage'; // 根据实际路径调整
 import GameConfig from '../config/GameConfig';
 
@@ -31,8 +31,8 @@ export interface ICharacter {
 export class Character extends Component {
 
     
-    @property(ProgressBar)
-    hpBar: ProgressBar = null;
+    @property(Prefab)
+    hpBar: Prefab = null;
 
     characterData: ICharacter = null;
 
